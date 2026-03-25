@@ -1,21 +1,22 @@
-from pathlib import Path
 import os
 import time
-import pandas as pd
 import requests
 import re
+import pandas as pd
+from pathlib import Path
 from tqdm.auto import tqdm
 from langchain_core.documents import Document
+from cinebot.config import settings
 
 def fetch_movie_data(base_url, data_folder_path, pages=50):
   if os.path.exists(data_folder_path):
       return pd.read_parquet(data_folder_path)
     
-  discover_endpoint = "discover/movie"
+  discover_endpoint = settings.DISCOVER_ENDPOINT
 
   headers = {
     "accept": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjMDEyZDNlOGFiZWZhYTU3M2U1YjhkZGQ3MWFhYmU1MiIsIm5iZiI6MTc3MzE3MjQ4NS43MDg5OTk5LCJzdWIiOiI2OWIwNzcwNTJiNmFmZjZkMzcxMWVhYjIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.yQJPjdE-OtV-anwg9AhGGBhR6605TmhCe_AJLeL-QWI"
+    "Authorization": "Bearer " + settings.TMDB_READ_ACCESS
   }
 
   data = []
@@ -24,23 +25,28 @@ def fetch_movie_data(base_url, data_folder_path, pages=50):
   for page in tqdm(range(1, pages+1), desc="Fetching movie IDs"):
 
     movie_params = {
-        "vote_count.gte":1000,
-        "page":page,
-        "sort_by":"popularity.desc"
+        "vote_count.gte": settings.MOVIE_QUERY_PARAMS['vote_count_gte'],
+        "page": page,
+        "sort_by": settings.MOVIE_QUERY_PARAMS['sort_by']
     }
 
-    response = requests.get(base_url+discover_endpoint, headers=headers, params=movie_params).json()
-    data.extend([{"id":movie["id"]} for movie in response['results']])
-
+    response = requests.get(base_url+discover_endpoint, headers=headers, params=movie_params)
+    
+    if response.status_code == 200:
+        response = response.json()
+        data.extend([{"id":movie["id"]} for movie in response['results']])
+    else:
+	    print(f'Failed to fetch movie IDs in page {page}')
+		
   print(f"Fetched the Ids of {len(data)} movies")
 
   # Get details of each movie
   for movie in tqdm(data, desc="Fetching movie details"):
-    details_endpoint = f"movie/{movie['id']}"
+    details_endpoint = settings.MOVIE_DETAILS_ENDPOINT.format(movie_id=movie['id'])
 
     try:
       response = requests.get(base_url+details_endpoint, headers=headers).json()
-
+      
     except Exception as e:
       print(f"Error fetching the movie details :{e}, ID : {movie['id']}")
       continue
@@ -53,7 +59,7 @@ def fetch_movie_data(base_url, data_folder_path, pages=50):
     movie['Plot'] = response['overview']
 
     # Get cast and crew details
-    credits_endpoint = f"movie/{movie['id']}/credits"
+    credits_endpoint = settings.CREDITS_ENDPOINT.format(movie_id=movie['id'])
 
     try:
       response = requests.get(base_url+credits_endpoint, headers=headers).json()
@@ -99,6 +105,7 @@ def preprocess_data(df, data_folder_path):
   # Create the directory if it doesn't already exist.
   Path(data_folder_path).parent.mkdir(parents=True, exist_ok=True)    
   df.to_parquet(data_folder_path)
+  
   return df
 
 
@@ -123,3 +130,10 @@ def create_docs(df):
         docs.append(doc)
 
     return docs
+
+if __name__ == '__main__':
+	base_url = settings.BASE_URL
+	raw_data_path = "./test_raw_data.parquet"
+	
+	df = fetch_movie_data(base_url, raw_data_path, pages=5)
+	preprocess_data(df, "./test_pre_data.parquet")
