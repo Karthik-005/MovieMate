@@ -12,8 +12,11 @@ wheels/
 # Virtual environment
 .venv
 
+# Data
+data/
+vector_db/
+
 # Other files
 project_brief.pdf
 
-# Data
-data/
+
