@@ -3,31 +3,30 @@ from dotenv import load_dotenv
 import yaml
 import os
 
+
 class Settings():
 	def __init__(self):
 	
 		# Locate the root dir.
-		self.ROOT_DIR = Path(__file__).parents[2]
+		self.ROOT_DIR = Path(__file__).parents[2].resolve()
 	
 		# Load the environmental variables.
-		try:
-			load_dotenv()
-			self.TMDB_API_KEY = os.getenv('TMDB_API_KEY')
-			self.TMDB_READ_ACCESS = os.getenv('TMDB_READ_ACCESS')
-			self.HF_TOKEN = os.getenv('HF_TOKEN')
-			
-		except Exception as e:
-			print("Couldn't load all the environmental variables")
-			print(f"Error : {e}")
+		if not load_dotenv(self.ROOT_DIR / '.env'):
+			raise FileNotFoundError('Couldn\'t find the .env file')
+				
+		self.TMDB_API_KEY = os.getenv('TMDB_API_KEY')
+		self.TMDB_READ_ACCESS = os.getenv('TMDB_READ_ACCESS')
+		self.HF_TOKEN = os.getenv('HF_TOKEN')
 		
-		
+		if not (self.TMDB_API_KEY and self.TMDB_READ_ACCESS and self.HF_TOKEN):
+			raise ValueError("Couldn't load all the environmental variables")
 		
 		# Load config.yaml file
-		with open(ROOT_DIR / "config.yaml", "r") as f:
+		with open(self.ROOT_DIR / "config.yaml", "r") as f:
 			config = yaml.safe_load(f)
 		
 		# Data
-		self.RAW_DATA_PATH = self.ROOT_DIR / config['data']['raw_date_path']
+		self.RAW_DATA_PATH = self.ROOT_DIR / config['data']['raw_data_path']
 		self.PREPROCESSED_DATA_PATH = self.ROOT_DIR / config['data']['preprocessed_data_path']
 		self.VECTOR_DB = {'path': self.ROOT_DIR / config['data']['vector_db']['path'],
 						  'collection_name': config['data']['vector_db']['collection_name']}
