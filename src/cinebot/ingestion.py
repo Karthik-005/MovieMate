@@ -117,13 +117,13 @@ def create_docs(df):
         doc = Document(
             page_content=row['combined_text_info'],
             metadata={
-                'genres':row['genres'].split(','),
+                'genres':row['genres'],
                 'Duration':row['Duration'],
                 'Year_of_release':row['Year_of_release'],
                 'Title':row['Title'],
                 'Rating':row['Rating'],
-                'Cast':row['Cast'].split(','),
-                'Directors':row['Directors'].split(',')
+                'Cast':row['Cast'],
+                'Directors':row['Directors']
             }
         )
 
