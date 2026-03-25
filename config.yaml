@@ -1,0 +1,19 @@
+data:
+  raw_data_path: data/raw/movies_data.parquet
+  preprocessed_data_path: data/preprocessed/movies_data.parquet
+  vector_db:
+    path: vector_db/
+    collection_name: movies
+
+api:
+  base_url: https://api.themoviedb.org/3/
+  discover_endpoint: discover/movie
+  credits_endpoint: movie/{movie_id}/credits
+  movie_details_endpoint: movie/{movie_id}
+  movie_query_parameters:
+    vote_count_gte: 1000
+    sort_by: popularity.desc
+
+hugging_face:
+  embedding_model: BAAI/bge-m3
+  
