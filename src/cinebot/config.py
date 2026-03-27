@@ -9,7 +9,6 @@ class Settings():
 	
 		# Locate the root dir.
 		self.ROOT_DIR = Path(__file__).parents[2].resolve()
-	
 		# Load the environmental variables.
 		if not load_dotenv(self.ROOT_DIR / '.env'):
 			raise FileNotFoundError('Couldn\'t find the .env file')
