@@ -9,10 +9,12 @@ class Settings():
 	
 		# Locate the root dir.
 		self.ROOT_DIR = Path(__file__).parents[2].resolve()
+		
 		# Load the environmental variables.
 		if not load_dotenv(self.ROOT_DIR / '.env'):
 			raise FileNotFoundError('Couldn\'t find the .env file')
-				
+		
+		# API Keys		
 		self.TMDB_API_KEY = os.getenv('TMDB_API_KEY')
 		self.TMDB_READ_ACCESS = os.getenv('TMDB_READ_ACCESS')
 		self.HF_TOKEN = os.getenv('HF_TOKEN')
@@ -30,7 +32,7 @@ class Settings():
 		self.VECTOR_DB = {'path': self.ROOT_DIR / config['data']['vector_db']['path'],
 						  'collection_name': config['data']['vector_db']['collection_name']}
 		
-		# API
+		# TMDB API
 		self.BASE_URL = config['api']['base_url']
 		self.DISCOVER_ENDPOINT = config['api']['discover_endpoint']
 		self.CREDITS_ENDPOINT = config['api']['credits_endpoint']
@@ -40,5 +42,17 @@ class Settings():
 
 		# Hugging face
 		self.EMBEDDING_MODEL = config['hugging_face']['embedding_model']
-
+		self.LLM = config['hugging_face']['llm']
+		
+		# LLM
+		self.LLM_CONFIG = {
+			'repo_id':self.LLM,
+			'task':"text-generation",
+			'temperature':0.8,
+			'top_p':0.9,
+			'max_new_tokens':512,
+			'huggingfacehub_api_token':self.HF_TOKEN,
+			'provider':'auto'
+		}
+		
 settings = Settings()
