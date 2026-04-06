@@ -1,8 +1,9 @@
 from langchain_core.prompts import format_document
 from langchain_core.chat_history import InMemoryChatMessageHistory
+from langchain_core.messages import get_buffer_string
 from langchain_chroma import Chroma
 from cinebot.config import settings
-from cinebot.prompts import CHAT_TEMPLATE, DOC_TEMPLATE 
+from cinebot.prompts import CHAT_TEMPLATE, DOC_TEMPLATE, CONDENSE_QUESTION_PROMPT
 from langchain_huggingface import HuggingFaceEndpointEmbeddings, HuggingFaceEndpoint, ChatHuggingFace
 from dotenv import load_dotenv
 import os
@@ -55,11 +56,25 @@ class Chatbot():
 		return prompt
 	
 	def ask(self, query):
-		docs = self.retrieve(query)
-		prompt = self.create_prompt(docs, query)
-		chat = self.chat
+	
+		if len(self.history.messages) > 0:
+			f_history = get_buffer_string(self.history.messages)
+			
+			condensed_prompt = CONDENSE_QUESTION_PROMPT.format(
+				chat_history=f_history,
+				question=query
+			)
+			
+			search_str = self.chat.invoke(condensed_prompt).content.strip()
+				
 		
-		result = chat.invoke(prompt)
+		else:
+			search_str = query
+		
+		docs = self.retrieve(search_str)
+		
+		prompt = self.create_prompt(docs, query)
+		result = self.chat.invoke(prompt)
 		self.history.add_user_message(query)
 		self.history.add_ai_message(result.content)
 		
