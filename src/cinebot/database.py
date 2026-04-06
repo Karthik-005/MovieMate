@@ -57,7 +57,7 @@ def initiate_vector_db(docs):
 						time.sleep(5)
         				
 					else:
-						raise RuntimeError(f"Batch failed permanently : {e}")
+						raise RuntimeError(f"Batch failed permanently: {e}")
         				
 	return vector_db
 

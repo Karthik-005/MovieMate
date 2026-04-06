@@ -1,10 +1,42 @@
 from cinebot.engine import Chatbot
 from cinebot.complete_setup import complete_setup
 import streamlit as st
+import os
+from dotenv import load_dotenv, set_key, dotenv_values
+from pathlib import Path
 
-comlpete_setup()
+env_path = Path(__file__).parent / '.env'
 
+if not env_path.exists():
+	env_path.touch()
+	
+load_dotenv(env_path)
+config = dotenv_values(env_path)
+	
+if not config.get("TMDB_READ_ACCESS") or not config.get("HF_TOKEN"):
+    with st.form(key='set_form'):
 
+        read_access = st.text_input("Enter your TMDB Read Access Token", type="password")
+        hf_token = st.text_input("Enter your Hugging Face Token", type="password")
+        
+        submit = st.form_submit_button("Submit")
+    
+    if submit:
+        if read_access and hf_token:
+            set_key(str(env_path), "TMDB_READ_ACCESS", read_access)
+            set_key(str(env_path), "HF_TOKEN", hf_token)
+
+            complete_setup(read_access, hf_token)
+            
+            st.success("Setup complete! Initializing chat...")
+            st.rerun() 
+        else:
+            st.error("Please provide both tokens.")
+    
+    st.stop() 
+		
+
+	
 # Store chat history in session state.
 if 'message_history' not in st.session_state:
 	st.session_state.message_history = []
