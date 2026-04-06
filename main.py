@@ -1,5 +1,9 @@
 from cinebot.engine import Chatbot
+from cinebot.complete_setup import complete_setup
 import streamlit as st
+
+comlpete_setup()
+
 
 # Store chat history in session state.
 if 'message_history' not in st.session_state:
