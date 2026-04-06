@@ -7,8 +7,12 @@ from pathlib import Path
 from tqdm.auto import tqdm
 from langchain_core.documents import Document
 from cinebot.config import settings
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 def fetch_movie_data(base_url, data_folder_path, pages=50):
+  TMDB_READ_ACCESS = os.getenv('TMDB_READ_ACCESS')
   if os.path.exists(data_folder_path):
       return pd.read_parquet(data_folder_path)
     
@@ -16,7 +20,7 @@ def fetch_movie_data(base_url, data_folder_path, pages=50):
 
   headers = {
     "accept": "application/json",
-    "Authorization": "Bearer " + settings.TMDB_READ_ACCESS
+    "Authorization": "Bearer " + TMDB_READ_ACCESS
   }
 
   data = []

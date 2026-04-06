@@ -3,24 +3,12 @@ from dotenv import load_dotenv
 import yaml
 import os
 
-
+load_dotenv()
 class Settings():
 	def __init__(self):
-	
+		HF_TOKEN = os.getenv('HF_TOKEN')
 		# Locate the root dir.
 		self.ROOT_DIR = Path(__file__).parents[2].resolve()
-		
-		# Load the environmental variables.
-		if not load_dotenv(self.ROOT_DIR / '.env'):
-			raise FileNotFoundError('Couldn\'t find the .env file')
-		
-		# API Keys		
-		self.TMDB_API_KEY = os.getenv('TMDB_API_KEY')
-		self.TMDB_READ_ACCESS = os.getenv('TMDB_READ_ACCESS')
-		self.HF_TOKEN = os.getenv('HF_TOKEN')
-		
-		if not (self.TMDB_API_KEY and self.TMDB_READ_ACCESS and self.HF_TOKEN):
-			raise ValueError("Couldn't load all the environmental variables")
 		
 		# Load config.yaml file
 		with open(self.ROOT_DIR / "config.yaml", "r") as f:
@@ -51,7 +39,7 @@ class Settings():
 			'temperature':0.8,
 			'top_p':0.9,
 			'max_new_tokens':512,
-			'huggingfacehub_api_token':self.HF_TOKEN,
+			'huggingfacehub_api_token':HF_TOKEN,
 			'provider':'auto'
 		}
 		

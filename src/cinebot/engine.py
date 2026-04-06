@@ -4,14 +4,15 @@ from langchain_chroma import Chroma
 from cinebot.config import settings
 from cinebot.prompts import CHAT_TEMPLATE, DOC_TEMPLATE 
 from langchain_huggingface import HuggingFaceEndpointEmbeddings, HuggingFaceEndpoint, ChatHuggingFace
-
-
+from dotenv import load_dotenv
+import os
 class Chatbot():
 	def __init__(self, top_k):
 		self.top_k = top_k
+		load_dotenv()
 		
 		# Connect to the vector DB.
-		hf_token = settings.HF_TOKEN
+		hf_token = os.getenv('HF_TOKEN')
 		vector_db_path = settings.VECTOR_DB['path']
 		embedding_model_name = settings.EMBEDDING_MODEL
 		embedding_model = HuggingFaceEndpointEmbeddings(model=embedding_model_name,
@@ -22,7 +23,7 @@ class Chatbot():
 						   	   persist_directory=vector_db_path,
 						   	   collection_name=collection_name)
 		
-		# Load the LLM.
+		# Connect to the LLM.
 		llm_repo_id = settings.LLM
 		llm_config = settings.LLM_CONFIG
 		llm = HuggingFaceEndpoint(**llm_config)
@@ -64,14 +65,3 @@ class Chatbot():
 		
 		return result.content
 
-if __name__ == "__main__":
-	bot = Chatbot(5)
-	
-	while True:
-		user_input = input("Enter your query: ")
-		
-		if user_input == "exit":
-			break
-			
-		res = bot.ask(user_input)
-		print(res)

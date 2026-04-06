@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 from langchain_chroma import Chroma
 from pathlib import Path
 from tqdm.auto import tqdm
@@ -8,11 +9,12 @@ from langchain_huggingface import HuggingFaceEndpointEmbeddings
 import time
 
 def initiate_vector_db(docs):
-	
+	load_dotenv()
+	HF_TOKEN = os.getenv('HF_TOKEN')
 	# Load the embedding model
 	model_name = settings.EMBEDDING_MODEL
 	embedding_model = HuggingFaceEndpointEmbeddings(model=model_name,
-	                                        huggingfacehub_api_token=settings.HF_TOKEN)
+	                                        huggingfacehub_api_token=HF_TOKEN)
     
     
 	vector_db_path = settings.VECTOR_DB['path']
