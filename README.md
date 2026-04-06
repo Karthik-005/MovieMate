@@ -18,7 +18,8 @@ CineBot is a conversational AI assistant that provides context-aware movie recom
 1. Clone the repository:
 ```bash
 git clone [https://github.com/Karthik-005/CineBot.git](https://github.com/Karthik-005/CineBot.git)
-cd CineBot```
+cd CineBot
+```
 
 2. Create and activate a virtual environment:
 uv venv
