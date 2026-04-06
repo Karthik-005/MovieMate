@@ -127,7 +127,8 @@ def create_docs(df):
                 'Title':row['Title'],
                 'Rating':row['Rating'],
                 'Cast':row['Cast'],
-                'Directors':row['Directors']
+                'Directors':row['Directors'],
+                'Plot':row['Plot']
             }
         )
 
