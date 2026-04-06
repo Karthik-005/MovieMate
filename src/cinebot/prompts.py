@@ -10,6 +10,15 @@ Context:
 Query: {query}
 """
 
+CONDENSE_QUESTION_PROMPT = PromptTemplate.from_template(
+    """Given the following conversation and a follow up question, rephrase the follow up question to be a standalone search query. Do not answer the question, just reformulate it.
+
+Chat History:
+{chat_history}
+Follow Up Input: {question}
+Standalone query:"""
+)
+
 CHAT_TEMPLATE = ChatPromptTemplate.from_messages([
 	("system", SYSTEM_MESSAGE),
 	MessagesPlaceholder(variable_name="chat_history"),
@@ -17,4 +26,4 @@ CHAT_TEMPLATE = ChatPromptTemplate.from_messages([
 ])
 
 DOC_TEMPLATE = PromptTemplate.from_template("""Title: {Title} \n Release year: {Year_of_release} \n
-                                                   Directors: {Directors} \nCast: {Cast} \nRating: {Rating} \nGenres: {genres}""")
+                                                   Directors: {Directors} \nCast: {Cast} \nRating: {Rating} \nGenres: {genres}\n Plot: {Plot}""")
