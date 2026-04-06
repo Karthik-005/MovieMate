@@ -2,7 +2,7 @@ data:
   raw_data_path: data/raw/movies_data.parquet
   preprocessed_data_path: data/preprocessed/movies_data.parquet
   vector_db:
-    path: vector_db/
+    path: data/vector_db/
     collection_name: movies
 
 api:
