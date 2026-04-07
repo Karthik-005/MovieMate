@@ -18,19 +18,22 @@ CineBot is a conversational AI assistant that provides context-aware movie recom
 1. Clone the repository:
 ```bash
 git clone [https://github.com/Karthik-005/CineBot.git](https://github.com/Karthik-005/CineBot.git)
-cd CineBot
+cd MovieMate
 ```
 
 2. Create and activate a virtual environment:
+```bash
 uv venv
 source .venv/bin/activate
-
+```
 3. Install dependencies in editable mode:
+```bash
 uv pip install -e .
-
+```
 4. Run the application:
+```bash
 streamlit run main.py
-
+```
 ## Explanation of initialization process
 
 1. When the main.py file is run for the first time, it checks for the existance of required API keys and data. If these requirements are not met then the UI prompts the user to enter TMDB read access token and hugging face API key. Once these details are entered, they are entered into a .env file in the project root.
@@ -41,6 +44,7 @@ streamlit run main.py
 
 
 ## Project Structure
+```bash
  .
 ├── config.yaml
 ├── main.py
@@ -60,7 +64,13 @@ streamlit run main.py
 │       ├── prompts.py
 │           
 └── uv.lock
-
+```
 ## Project Structure Explanation
 
+## Limitations
 
+1. The model performs a vector DB search for every query (even the queries that only require chat history) this takes unnecessary amount of time.
+
+2. The chatbot is good at answering semantic queries (ex: "Suggest some action movies...") but it cannot handle queries with very specific details (ex: "suggest movies released in 2021 and have a duration above 100 min"). This is probably because the plot of each movie in the provided context takes most of the space, as a result the other specific details like duration, year of release are diluted in the embedding vectors.  
+	
+ 
