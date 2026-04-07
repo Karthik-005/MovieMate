@@ -11,8 +11,8 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-def fetch_movie_data(base_url, data_folder_path, pages=50):
-  TMDB_READ_ACCESS = os.getenv('TMDB_READ_ACCESS')
+def fetch_movie_data(base_url, data_folder_path, read_access, pages=50):
+  TMDB_READ_ACCESS = read_access
   if os.path.exists(data_folder_path):
       return pd.read_parquet(data_folder_path)
     
