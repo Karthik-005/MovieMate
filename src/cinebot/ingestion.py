@@ -79,8 +79,6 @@ def fetch_movie_data(base_url, data_folder_path, pages=50):
     # Directors' names
     directors = {member['name'] for member in response['crew'] if member["known_for_department"]=="Directing"}
     movie['Directors'] = ",".join(directors)
-
-    time.sleep(0.1)
 	
   
   df = pd.DataFrame(data)
