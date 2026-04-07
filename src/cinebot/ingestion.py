@@ -134,9 +134,3 @@ def create_docs(df):
 
     return docs
 
-if __name__ == '__main__':
-	base_url = settings.BASE_URL
-	raw_data_path = "./test_raw_data.parquet"
-	
-	df = fetch_movie_data(base_url, raw_data_path, pages=5)
-	preprocess_data(df, "./test_pre_data.parquet")

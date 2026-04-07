@@ -7,6 +7,7 @@ from cinebot.prompts import CHAT_TEMPLATE, DOC_TEMPLATE, CONDENSE_QUESTION_PROMP
 from langchain_huggingface import HuggingFaceEndpointEmbeddings, HuggingFaceEndpoint, ChatHuggingFace
 from dotenv import load_dotenv
 import os
+
 class Chatbot():
 	def __init__(self, top_k):
 		self.top_k = top_k

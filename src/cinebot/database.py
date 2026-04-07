@@ -63,13 +63,3 @@ def initiate_vector_db(docs):
         				
 	return vector_db
 
-if __name__ == "__main__":
-	raw_data_path = settings.RAW_DATA_PATH
-	pre_data_path = settings.PREPROCESSED_DATA_PATH
-	base_url = settings.BASE_URL
-	
-	df = fetch_movie_data(base_url, raw_data_path)
-	df = preprocess_data(df, pre_data_path)
-	docs = create_docs(df)
-	
-	initiate_vector_db(docs)
